@@ -33,13 +33,15 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
 
     def setupValidators(self):
         validator = QDoubleValidator()
-        self.ParameterI.setValidator(validator)
+        self.ParameterL.setValidator(validator)
         self.ParameterS.setValidator(validator)
         self.ParameterT.setValidator(validator)
         self.ParameterAlpha.setValidator(validator)
         self.ParameterU0.setValidator(validator)
         self.ParameterK.setValidator(validator)
         self.ParameterC.setValidator(validator)
+        self.ParameterTSmall.setValidator(validator)
+        self.ParameterI.setValidator(validator)
 
     def setupStarterParameters(self):
         self.ParameterI.setText('6')
@@ -49,6 +51,9 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ParameterU0.setText('0')
         self.ParameterK.setText('0.065')
         self.ParameterC.setText('1.84')
+        self.ParameterTSmall.setText('125')
+        self.ParameterI.setText('50')
+
 
     def connectButtons(self):
         self.Plotting.clicked.connect(self.plotGraph)

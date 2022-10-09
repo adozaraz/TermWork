@@ -145,76 +145,6 @@
      <string>Отрисовать график</string>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="ParameterAlpha">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>150</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterT">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>110</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterS">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>70</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterI">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>30</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterU0">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>190</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterK">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>230</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="ParameterC">
-    <property name="geometry">
-     <rect>
-      <x>630</x>
-      <y>270</y>
-      <width>181</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
@@ -315,6 +245,39 @@
         <string>C</string>
        </property>
       </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>30</y>
+      <width>135</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLineEdit" name="ParameterI"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterS"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterT"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterAlpha"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterU0"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterK"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterC"/>
      </item>
     </layout>
    </widget>

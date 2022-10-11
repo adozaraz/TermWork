@@ -12,9 +12,15 @@ class SchemeType(Enum):
     MODIFIED_IMPLICIT = 3
 
 
+class PlottingType(Enum):
+    X = 0
+    T = 1
+
+
 class PlotWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         self.schemeType = SchemeType.SIMPLE_APPARENT
+        self.plottingType = PlottingType.X
         Ui_MainWindow.__init__(self)
         QMainWindow.__init__(self)
         self.setupUi(self)
@@ -23,6 +29,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.setupValidators()
         self.setupStarterParameters()
         self.SimpleApparent.toggle()
+        self.XGraph.toggle()
 
     # Setup functions
     def setupRadioButtons(self):
@@ -30,6 +37,8 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ModifiedApparent.toggled.connect(self.setPlottingScheme(SchemeType.MODIFIED_APPARENT))
         self.SimpleImplicit.toggled.connect(self.setPlottingScheme(SchemeType.SIMPLE_IMPLICIT))
         self.ModifiedImplicit.toggled.connect(self.setPlottingScheme(SchemeType.MODIFIED_IMPLICIT))
+        self.XGraph.toggled.connect(self.setPlottingType(PlottingType.X))
+        self.TGraph.toggled.connect(self.setPlottingType(PlottingType.T))
 
     def setupValidators(self):
         validator = QDoubleValidator()
@@ -39,6 +48,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ParameterAlpha.setValidator(validator)
         self.ParameterU0.setValidator(validator)
         self.ParameterK.setValidator(validator)
+        self.ParameterKSmall.setValidator(validator) # kSmall
         self.ParameterC.setValidator(validator)
         self.ParameterTSmall.setValidator(validator)
         self.ParameterI.setValidator(validator)
@@ -49,11 +59,11 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ParameterT.setText('250')
         self.ParameterAlpha.setText('0.003')
         self.ParameterU0.setText('0')
-        self.ParameterK.setText('0.065')
+        self.ParameterK.setText('10000')
         self.ParameterC.setText('1.84')
         self.ParameterTSmall.setText('125')
         self.ParameterI.setText('50')
-
+        self.ParameterKSmall.setText('0.065')
 
     def connectButtons(self):
         self.Plotting.clicked.connect(self.plotGraph)
@@ -80,6 +90,18 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
             return setSimpleImplicit
         if scheme == SchemeType.MODIFIED_IMPLICIT:
             return setModifiedImplicit
+
+    def setPlottingType(self, plotType=PlottingType.X):
+        def setXGraph():
+            self.plottingType = PlottingType.X
+
+        def setTGraph():
+            self.plottingType = PlottingType.T
+
+        if plotType == PlottingType.X:
+            return setXGraph
+        if plotType == PlottingType.T:
+            return setTGraph
 
     # Other functions
 

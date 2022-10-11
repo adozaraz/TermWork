@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>926</width>
+    <width>939</width>
     <height>600</height>
    </rect>
   </property>
@@ -28,7 +28,7 @@
     <property name="geometry">
      <rect>
       <x>645</x>
-      <y>0</y>
+      <y>2</y>
       <width>111</width>
       <height>21</height>
      </rect>
@@ -66,7 +66,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>370</y>
+      <y>360</y>
       <width>373</width>
       <height>108</height>
      </rect>
@@ -151,7 +151,7 @@
       <x>571</x>
       <y>29</y>
       <width>49</width>
-      <height>281</height>
+      <height>291</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -234,6 +234,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="label_12">
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>k</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
@@ -277,8 +290,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>637</x>
-      <y>27</y>
+      <x>630</x>
+      <y>30</y>
       <width>135</width>
       <height>291</height>
      </rect>
@@ -303,6 +316,9 @@
       <widget class="QLineEdit" name="ParameterK"/>
      </item>
      <item>
+      <widget class="QLineEdit" name="ParameterKSmall"/>
+     </item>
+     <item>
       <widget class="QLineEdit" name="ParameterT"/>
      </item>
      <item>
@@ -313,13 +329,70 @@
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>2</y>
+      <width>71</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Montserrat</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>График</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>790</x>
+      <y>40</y>
+      <width>111</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QRadioButton" name="XGraph">
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>X</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="TGraph">
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>T</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>926</width>
+     <width>939</width>
      <height>21</height>
     </rect>
    </property>

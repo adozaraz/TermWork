@@ -151,7 +151,7 @@
       <x>571</x>
       <y>29</y>
       <width>49</width>
-      <height>291</height>
+      <height>304</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -285,6 +285,19 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QLabel" name="label_14">
+       <property name="font">
+        <font>
+         <family>Montserrat</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>X</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -293,7 +306,7 @@
       <x>630</x>
       <y>30</y>
       <width>135</width>
-      <height>291</height>
+      <height>311</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -326,6 +339,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="ParameterI"/>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="ParameterX"/>
      </item>
     </layout>
    </widget>

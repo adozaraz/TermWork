@@ -4,7 +4,7 @@ from Project import Ui_MainWindow
 from PyQt5.QtWidgets import QMainWindow
 from enum import Enum
 
-from SchemesCalculation import DifferentiationScheme
+from DifferentiationScheme import DifferentiationScheme
 
 class SchemeType(Enum):
     SIMPLE_APPARENT = 0

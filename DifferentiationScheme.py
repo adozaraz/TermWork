@@ -37,6 +37,7 @@ class DifferentiationScheme:
         self.hx = self.l / self.I
         self.ht = self.T / self.K
         self.xi = 4 * self.const_alpha / np.sqrt(self.s)
+        self.gamma = self.ht / self.hx ** 2
 
     def SimpleApparentX(self):
         pass
@@ -49,15 +50,20 @@ class DifferentiationScheme:
             lowerLayer[i] = self.const_u0
 
         for k in range(1, maxNode):
+            print(k)
             upperLayer = np.zeros(self.I + 1)
             for i in range(1, self.I):
                 node = self.const_k * (lowerLayer[i + 1] - 2 * lowerLayer[i] + lowerLayer[i - 1]) / self.hx ** 2 - \
                        self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
                 upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
-            upperLayer[0] = (self.const_alpha / k) * (lowerLayer[0] - self.const_u0) * self.hx + lowerLayer[-1]
-            upperLayer[self.I] = -(self.const_alpha / k) * (lowerLayer[self.I] - self.const_u0) * self.hx + lowerLayer[
-                self.I - 1]
+            upperLayer[0] = ((2 * self.gamma * self.const_k) / self.c) * \
+                            (lowerLayer[1] - lowerLayer[0] - ((self.const_alpha * self.hx) / k)
+                             * (lowerLayer[0] - self.const_u0)) - ((self.xi * self.ht)/self.c)*lowerLayer[0] + (self.ht/self.c)*(self.const_u0 + self.phi(0, self.l)) + lowerLayer[0]
+            upperLayer[self.I] = ((2 * self.gamma * self.const_k) / self.c) * \
+                            (lowerLayer[self.I - 1] - lowerLayer[self.I] - ((self.const_alpha * self.hx) / k)
+                             * (lowerLayer[self.I] - self.const_u0)) - ((self.xi * self.ht) / self.c) * lowerLayer[self.I] + (
+                                        self.ht / self.c) * (self.const_u0 + self.phi(self.I, self.l)) - lowerLayer[self.I]
 
             lowerLayer = upperLayer
 
@@ -90,9 +96,16 @@ class DifferentiationScheme:
                        self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
                 upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
-            upperLayer[0] = (self.const_alpha / k) * (lowerLayer[0] - self.const_u0) * self.hx + lowerLayer[-1]
-            upperLayer[self.I] = -(self.const_alpha / k) * (lowerLayer[self.I] - self.const_u0) * self.hx + lowerLayer[
-                self.I - 1]
+            upperLayer[0] = ((2 * self.gamma * self.const_k) / self.c) * \
+                            (lowerLayer[1] - lowerLayer[0] - ((self.const_alpha * self.hx) / k)
+                             * (lowerLayer[0] - self.const_u0)) - ((self.xi * self.ht) / self.c) * lowerLayer[0] + (
+                                        self.ht / self.c) * (self.const_u0 + self.phi(0, self.l)) + lowerLayer[0]
+            upperLayer[self.I] = ((2 * self.gamma * self.const_k) / self.c) * \
+                                 (lowerLayer[self.I - 1] - lowerLayer[self.I] - ((self.const_alpha * self.hx) / k)
+                                  * (lowerLayer[self.I] - self.const_u0)) - ((self.xi * self.ht) / self.c) * lowerLayer[
+                                     self.I] + (
+                                         self.ht / self.c) * (self.const_u0 + self.phi(self.I, self.l)) - lowerLayer[
+                                     self.I]
 
             lowerLayer = upperLayer
             U.append(lowerLayer[maxNode])

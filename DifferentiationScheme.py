@@ -50,8 +50,10 @@ class DifferentiationScheme:
 
         for k in range(1, maxNode):
             upperLayer = np.zeros(self.I + 1)
-            for i in range(1, self.I - 1):
-                upperLayer[i] = self.calculateNode(i, lowerLayer[i], lowerLayer[i - 1], lowerLayer[i + 1])
+            for i in range(1, self.I):
+                node = self.const_k * (lowerLayer[i + 1] - 2 * lowerLayer[i] + lowerLayer[i - 1]) / self.hx ** 2 - \
+                       self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
+                upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
             upperLayer[0] = (self.const_alpha / k) * (lowerLayer[0] - self.const_u0) * self.hx + lowerLayer[-1]
             upperLayer[self.I] = -(self.const_alpha / k) * (lowerLayer[self.I] - self.const_u0) * self.hx + lowerLayer[
@@ -83,8 +85,10 @@ class DifferentiationScheme:
 
         for k in range(1, self.K + 1):
             upperLayer = np.zeros(self.I + 1)
-            for i in range(1, self.I - 1):
-                upperLayer[i] = self.calculateNode(i, lowerLayer[i], lowerLayer[i - 1], lowerLayer[i + 1])
+            for i in range(1, self.I):
+                node = self.const_k * (lowerLayer[i + 1] - 2 * lowerLayer[i] + lowerLayer[i - 1]) / self.hx ** 2 - \
+                       self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
+                upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
             upperLayer[0] = (self.const_alpha / k) * (lowerLayer[0] - self.const_u0) * self.hx + lowerLayer[-1]
             upperLayer[self.I] = -(self.const_alpha / k) * (lowerLayer[self.I] - self.const_u0) * self.hx + lowerLayer[
@@ -93,7 +97,7 @@ class DifferentiationScheme:
             lowerLayer = upperLayer
             U.append(lowerLayer[maxNode])
 
-        label = f'Явная схема (x={self.x})'
+        label = f'Модифицированная явная схема (x={self.x})'
 
         return t, U, label
 
@@ -102,8 +106,3 @@ class DifferentiationScheme:
 
     def ModifiedImplicitT(self):
         pass
-
-    def calculateNode(self, i, cur, prev, next):
-        node = self.const_k * (next - 2 * cur + prev) / self.hx ** 2 - \
-               self.xi * cur + self.phi(i * self.hx, self.l)
-        return self.ht * node / self.c + cur

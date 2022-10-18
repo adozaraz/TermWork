@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 
 class DifferentiationScheme:
     def __init__(self, params):
@@ -89,7 +89,48 @@ class DifferentiationScheme:
         pass
 
     def ModifiedImplicitX(self):
-        pass
+        x = np.linspace(0, 1, self.I + 1)  ########
+        maxNode = int(self.t / self.ht)
+        betta = self.const_alpha / self.const_k
+        mu = self.const_k / self.c
+        gamma = 4 * self.const_alpha / (self.s ** 0.5)
+        a = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c
+        b = mu * self.ht / (self.hx ** 2)
+        g_i = np.zeros(self.I + 1)
+        phi = np.zeros(self.I + 1)
+        for i in range(0, self.I):
+            phi[i] = math.sin(math.pi * x[i] / self.l) ** 4
+            g_i[i] = self.ht / self.c * (gamma * self.const_u0 + phi[i])
+        U = np.zeros((self.K, self.I + 1))
+        U[0, 0:self.I] = self.const_u0  # u_i_0 = u0
+        g_shtrih_i = np.zeros((self.K + 1, self.I + 1))
+        v1 = np.zeros(self.K + 1)
+        v2 = np.zeros(self.K + 1)
+        alpha_i = np.zeros(self.I + 1)
+        betta_i = np.zeros((self.K, self.I + 1))
+        d1 = d2 = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c + 2 * betta * mu * self.ht / self.hx
+        w1 = w2 = 2 * mu * self.ht / (self.hx ** 2)
+        alpha_i[1] = b / (a - b * w1 / d1)
+        for k in range(1, self.K):
+            for i in range(0, self.I):
+                g_shtrih_i[k - 1, i] = U[k - 1, i] + g_i[i]
+
+            v1[k - 1] = U[k - 1, 0] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
+                                                       gamma * self.ht / self.c) + self.ht / self.c * phi[0]
+            betta_i[k, 1] = (g_shtrih_i[k - 1, 1] + b * v1[k - 1] / d1) / (a - b * w1 / d1)
+
+            for i in range(2, self.I - 1):
+                alpha_i[i] = b / (a - b * alpha_i[i - 1])
+                betta_i[k, i] = (g_shtrih_i[k - 1, i] + b * betta_i[k, i - 1]) / (a - b * alpha_i[i - 1])
+            v2[k - 1] = U[k - 1, self.I] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
+                                                            gamma * self.ht / self.c) + self.ht / self.c * phi[
+                            self.I - 1]
+            U[k, self.I] = (v2[k - 1] + w2 * betta_i[k, self.I - 1]) / (d2 - w2 * alpha_i[self.I - 1])
+            for i in range(self.I - 1, 1, -1):
+                U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
+            U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
+        label = f'Модифицированная неявная схема (T={self.T}, t={self.t})'
+        return x, U[maxNode], label
 
     def SimpleApparentT(self):
         gamma = 4 * self.const_alpha / np.sqrt(self.s)
@@ -154,4 +195,44 @@ class DifferentiationScheme:
         pass
 
     def ModifiedImplicitT(self):
-        pass
+        t = np.linspace(0, self.T, self.K + 1)
+        betta = self.const_alpha / self.const_k
+        mu = self.const_k / self.c
+        gamma = 4 * self.const_alpha / (self.s ** 0.5)
+        a = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c
+        b = mu * self.ht / (self.hx ** 2)
+        g_i = np.zeros(self.I + 1)
+        phi = np.zeros(self.I + 1)
+        for i in range(0, self.I):
+            phi[i] = math.sin(math.pi * self.x / self.l) ** 4
+            g_i[i] = self.ht / self.c * (gamma * self.const_u0 + phi[i])
+        U = np.zeros((self.K + 1, self.I + 1))
+        U[0, 0:self.I] = self.const_u0  # u_i_0 = u0
+        g_shtrih_i = np.zeros((self.K + 1, self.I + 1))
+        v1 = np.zeros(self.K + 1)
+        v2 = np.zeros(self.K + 1)
+        alpha_i = np.zeros(self.I + 1)
+        betta_i = np.zeros((self.K, self.I + 1))
+        d1 = d2 = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c + 2 * betta * mu * self.ht / self.hx
+        w1 = w2 = 2 * mu * self.ht / (self.hx ** 2)
+        alpha_i[1] = b / (a - b * w1 / d1)
+        for k in range(1, self.K):
+            for i in range(0, self.I):
+                g_shtrih_i[k - 1, i] = U[k - 1, i] + g_i[i]
+
+            v1[k - 1] = U[k - 1, 0] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
+                                                       gamma * self.ht / self.c) + self.ht / self.c * phi[0]
+            betta_i[k, 1] = (g_shtrih_i[k - 1, 1] + b * v1[k - 1] / d1) / (a - b * w1 / d1)
+
+            for i in range(2, self.I - 1):
+                alpha_i[i] = b / (a - b * alpha_i[i - 1])
+                betta_i[k, i] = (g_shtrih_i[k - 1, i] + b * betta_i[k, i - 1]) / (a - b * alpha_i[i - 1])
+            v2[k - 1] = U[k - 1, self.I] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
+                                                            gamma * self.ht / self.c) + self.ht / self.c * phi[
+                            self.I - 1]
+            U[k, self.I] = (v2[k - 1] + w2 * betta_i[k, self.I - 1]) / (d2 - w2 * alpha_i[self.I - 1])
+            for i in range(self.I - 1, 1, -1):
+                U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
+            U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
+        label = f'Модифицированная неявная схема (x={self.x})'
+        return t, U[:, 2], label

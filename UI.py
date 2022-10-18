@@ -65,7 +65,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ParameterC.setValidator(validator)
         self.ParameterTSmall.setValidator(validator)
         self.ParameterI.setValidator(validator)
-        self.ParameterX.setValidator(validator)
+        # self.ParameterX.setValidator(validator)
 
     def setupStarterParameters(self):
         self.ParameterS.setText(str(self.params['s']))

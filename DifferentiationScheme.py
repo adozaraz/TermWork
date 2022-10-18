@@ -39,7 +39,25 @@ class DifferentiationScheme:
         self.xi = 4 * self.const_alpha / np.sqrt(self.s)
 
     def SimpleApparentX(self):
-        pass
+        iteration = int(self.t / self.ht)
+        x = np.linspace(0, self.l, self.I + 1)
+        A_low = np.zeros(self.I + 1)
+        gamma = 4 * self.const_alpha / np.sqrt(self.s)
+        for i in range(0, self.I + 1):
+            A_low[i] = self.const_u0
+        for k in range(1, iteration):
+            A_top = np.zeros(self.I + 1)
+            for i in range(1, self.I):
+                temp = self.const_k * (A_low[i + 1] - 2 * A_low[i] + A_low[i - 1]) / self.hx ** 2 - gamma * (
+                            A_low[i] - self.const_u0) + self.phi(
+                    i * self.hx, self.l)
+                A_top[i] = self.ht * temp / self.c + A_low[i]
+            A_top[0] = A_top[1] / ((self.const_alpha * self.hx / self.const_k) + 1)
+            A_top[self.I] = A_top[self.I - 1] / ((self.const_alpha * self.hx / self.const_k) + 1)
+            A_low = A_top
+
+        label = f'Простейшая явная схема (T={self.T}, t={self.t}'
+        return x, A_low, label
 
     def ModifiedApparentX(self):
         maxNode = int(self.t / self.ht)
@@ -74,7 +92,28 @@ class DifferentiationScheme:
         pass
 
     def SimpleApparentT(self):
-        pass
+        gamma = 4 * self.const_alpha / np.sqrt(self.s)
+        iteration = int(self.x / self.hx)
+        t = np.linspace(0, self.T, self.K + 1)
+        A_low = np.zeros(self.I + 1)
+        for i in range(0, self.I + 1):
+            A_low[i] = self.const_u0
+        U = [A_low[iteration]]
+        for k in range(1, self.K + 1):
+            A_top = np.zeros(self.I + 1)
+            for i in range(1, self.I):
+                temp = self.const_k * (A_low[i + 1] - 2 * A_low[i] + A_low[i - 1]) / self.hx ** 2 - gamma * (A_low[i] - self.const_u0) + self.phi(
+                    i * self.hx, self.l)
+                A_top[i] = self.ht * temp / self.c + A_low[i]
+
+            A_top[0] = A_top[1] / ((self.const_alpha * self.hx / self.const_k) + 1)
+            A_top[self.I] = A_top[self.I - 1] / ((self.const_alpha * self.hx / self.const_k) + 1)
+            A_low = A_top
+
+            U.append(A_low[iteration])
+
+        label = f'Простейшая явная схема (x={self.x})'
+        return t, U, label
 
     def ModifiedApparentT(self):
         maxNode = int(self.x / self.hx)

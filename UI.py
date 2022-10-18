@@ -139,7 +139,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.getNewParams()
         x, y, label, xLabel, yLabel = None, None, None, None, None
         if self.plottingType == PlottingType.X:
-            xLabel = 't, Время'
+            xLabel = 'x, Длина'
             yLabel = 'U, Температура'
             if self.schemeType == SchemeType.SIMPLE_APPARENT:
                 x, y, label = self.difSchemes.SimpleApparentX()
@@ -150,7 +150,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
             elif self.schemeType == SchemeType.MODIFIED_IMPLICIT:
                 x, y, label = self.difSchemes.ModifiedImplicitX()
         elif self.plottingType == PlottingType.T:
-            xLabel = 'x, Длина'
+            xLabel = 't, Время'
             yLabel = 'U, Температура'
             if self.schemeType == SchemeType.SIMPLE_APPARENT:
                 x, y, label = self.difSchemes.SimpleApparentT()

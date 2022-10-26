@@ -76,7 +76,7 @@
       <widget class="QRadioButton" name="SimpleApparent">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -89,7 +89,7 @@
       <widget class="QRadioButton" name="ModifiedApparent">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -102,7 +102,7 @@
       <widget class="QRadioButton" name="SimpleImplicit">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -115,7 +115,7 @@
       <widget class="QRadioButton" name="ModifiedImplicit">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -137,7 +137,7 @@
     </property>
     <property name="font">
      <font>
-      <family>Montserrat</family>
+      <family>Times New Roman</family>
       <pointsize>12</pointsize>
      </font>
     </property>
@@ -159,7 +159,7 @@
       <widget class="QLabel" name="label_2">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -172,7 +172,7 @@
       <widget class="QLabel" name="label_3">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -185,7 +185,7 @@
       <widget class="QLabel" name="label_10">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -198,7 +198,7 @@
       <widget class="QLabel" name="label_5">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -211,7 +211,7 @@
       <widget class="QLabel" name="label_6">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -224,7 +224,7 @@
       <widget class="QLabel" name="label_7">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -237,7 +237,7 @@
       <widget class="QLabel" name="label_12">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -250,7 +250,7 @@
       <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -263,7 +263,7 @@
       <widget class="QLabel" name="label_8">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -276,7 +276,7 @@
       <widget class="QLabel" name="label_11">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -289,7 +289,7 @@
       <widget class="QLabel" name="label_14">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -378,7 +378,7 @@
       <widget class="QRadioButton" name="XGraph">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -391,7 +391,7 @@
       <widget class="QRadioButton" name="TGraph">
        <property name="font">
         <font>
-         <family>Montserrat</family>
+         <family>Times New Roman</family>
          <pointsize>12</pointsize>
         </font>
        </property>
@@ -401,6 +401,25 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="Plotting_2">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>480</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Times New Roman</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Добавить график</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

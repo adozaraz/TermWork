@@ -56,7 +56,7 @@ class DifferentiationScheme:
             A_top[self.I] = A_top[self.I - 1] / ((self.const_alpha * self.hx / self.const_k) + 1)
             A_low = A_top
 
-        label = f'Простейшая явная схема (T={self.T}, t={self.t}'
+        label = f'ПЯ (T={self.T}, t={self.t}, I={self.I}, K={self.K})'
         return x, A_low, label
 
     def ModifiedApparentX(self):
@@ -82,7 +82,7 @@ class DifferentiationScheme:
             upperLayer[self.I] = self.ht * nodeI / self.c + lowerLayer[self.I]
             lowerLayer = upperLayer
 
-        label = f'Модифицированная явная схема (T={self.T}, t={self.t})'
+        label = f'МЯ (T={self.T}, t={self.t}, I={self.I}, K={self.K})'
         return x, lowerLayer, label
 
     def SimpleImplicitX(self):
@@ -129,7 +129,7 @@ class DifferentiationScheme:
             for i in range(self.I - 1, 1, -1):
                 U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
             U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
-        label = f'Модифицированная неявная схема (T={self.T}, t={self.t})'
+        label = f'МН (T={self.T}, t={self.t}, I={self.I}, K={self.K})'
         return x, U[maxNode], label
 
     def SimpleApparentT(self):
@@ -153,7 +153,7 @@ class DifferentiationScheme:
 
             U.append(A_low[iteration])
 
-        label = f'Простейшая явная схема (x={self.x})'
+        label = f'ПЯ (x={self.x}, I={self.I}, K={self.K})'
         return t, U, label
 
     def ModifiedApparentT(self):
@@ -187,7 +187,7 @@ class DifferentiationScheme:
 
             U.append(lowerLayer[maxNode])
 
-        label = f'Модифицированная явная схема (x={self.x})'
+        label = f'МЯ (x={self.x}, I={self.I}, K={self.K})'
 
         return t, U, label
 
@@ -234,5 +234,5 @@ class DifferentiationScheme:
             for i in range(self.I - 1, 1, -1):
                 U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
             U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
-        label = f'Модифицированная неявная схема (x={self.x})'
+        label = f'МН (x={self.x}, I={self.I}, K={self.K})'
         return t, U[:, 2], label

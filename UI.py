@@ -43,6 +43,8 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.SimpleApparent.toggle()
         self.XGraph.toggle()
         self.difSchemes = DifferentiationScheme(self.params)
+        self.drawn = False
+        self.Plotting_2.setEnabled(False)
 
     # Setup functions
     def setupRadioButtons(self):
@@ -50,8 +52,8 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.ModifiedApparent.toggled.connect(self.setPlottingScheme(SchemeType.MODIFIED_APPARENT))
         self.SimpleImplicit.toggled.connect(self.setPlottingScheme(SchemeType.SIMPLE_IMPLICIT))
         self.ModifiedImplicit.toggled.connect(self.setPlottingScheme(SchemeType.MODIFIED_IMPLICIT))
-        self.XGraph.toggled.connect(self.setPlottingType(PlottingType.X))
-        self.TGraph.toggled.connect(self.setPlottingType(PlottingType.T))
+        self.XGraph.toggled.connect(self.setPlottingTypeAndBlockButton(PlottingType.X))
+        self.TGraph.toggled.connect(self.setPlottingTypeAndBlockButton(PlottingType.T))
 
     def setupValidators(self):
         validator = QDoubleValidator()
@@ -82,6 +84,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
 
     def connectButtons(self):
         self.Plotting.clicked.connect(self.plotGraph)
+        self.Plotting_2.clicked.connect(self.addPlot)
 
     # Fabric functions
     def setPlottingScheme(self, scheme=SchemeType.SIMPLE_APPARENT):
@@ -106,7 +109,7 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         if scheme == SchemeType.MODIFIED_IMPLICIT:
             return setModifiedImplicit
 
-    def setPlottingType(self, plotType=PlottingType.X):
+    def setPlottingTypeAndBlockButton(self, plotType=PlottingType.X):
         def setXGraph():
             self.plottingType = PlottingType.X
 
@@ -117,6 +120,8 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
             return setXGraph
         if plotType == PlottingType.T:
             return setTGraph
+
+
 
     # Other functions
 
@@ -135,7 +140,12 @@ class PlotWindow(QMainWindow, Ui_MainWindow):
         self.difSchemes.setNewParams(self.params)
 
     def plotGraph(self):
+        if not self.Plotting_2.isEnabled():
+            self.Plotting_2.setEnabled(True)
         self.Graphics.clearPlot()
+        self.addPlot()
+
+    def addPlot(self):
         self.getNewParams()
         x, y, label, xLabel, yLabel = None, None, None, None, None
         if self.plottingType == PlottingType.X:

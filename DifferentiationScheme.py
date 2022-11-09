@@ -16,7 +16,7 @@ class DifferentiationScheme:
         self.const_u0 = params["U_0"]
         self.hx = self.l / self.I
         self.ht = self.T / self.K
-        self.xi = 4 * self.const_alpha / np.sqrt(self.s)
+        self.gamma = 4 * self.const_alpha / np.sqrt(self.s)
 
     @staticmethod
     def phi(x, l):
@@ -36,7 +36,7 @@ class DifferentiationScheme:
         self.const_u0 = params["U_0"]
         self.hx = self.l / self.I
         self.ht = self.T / self.K
-        self.xi = 4 * self.const_alpha / np.sqrt(self.s)
+        self.gamma = 4 * self.const_alpha / np.sqrt(self.s)
 
     def SimpleApparentX(self):
         iteration = int(self.t / self.ht)
@@ -61,7 +61,7 @@ class DifferentiationScheme:
 
     def ModifiedApparentX(self):
         maxNode = int(self.t / self.ht)
-        x = np.linspace(0, 1, self.I + 1)
+        x = np.linspace(0, self.l, self.I + 1)
         lowerLayer = np.zeros(self.I + 1)
         for i in range(lowerLayer.shape[0]):
             lowerLayer[i] = self.const_u0
@@ -70,14 +70,14 @@ class DifferentiationScheme:
             upperLayer = np.zeros(self.I + 1)
             for i in range(1, self.I):
                 node = self.const_k * (lowerLayer[i + 1] - 2 * lowerLayer[i] + lowerLayer[i - 1]) / self.hx ** 2 - \
-                       self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
+                       self.gamma * lowerLayer[i] + self.phi(i * self.hx, self.l)
                 upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
             node0 = 2 * self.const_k * (lowerLayer[1] - lowerLayer[0] - self.const_alpha
-                                        * self.hx * (lowerLayer[0] - self.const_u0) / self.const_k) / self.hx ** 2 - self.xi * lowerLayer[0] + self.const_u0 + self.phi(0, self.l)
+                                        * self.hx * (lowerLayer[0] - self.const_u0) / self.const_k) / self.hx ** 2 - self.gamma * lowerLayer[0] + self.const_u0 + self.phi(0, self.l)
             upperLayer[0] = self.ht * node0 / self.c + lowerLayer[0]
             nodeI = 2 * self.const_k * (lowerLayer[self.I - 1] - lowerLayer[self.I] - self.const_alpha
-                                        * self.hx * (lowerLayer[self.I] - self.const_u0) / self.const_k) / self.hx ** 2 - self.xi * \
+                                        * self.hx * (lowerLayer[self.I] - self.const_u0) / self.const_k) / self.hx ** 2 - self.gamma * \
                     lowerLayer[self.I] + self.const_u0 + self.phi(self.I * self.hx, self.l)
             upperLayer[self.I] = self.ht * nodeI / self.c + lowerLayer[self.I]
             lowerLayer = upperLayer
@@ -86,10 +86,35 @@ class DifferentiationScheme:
         return x, lowerLayer, label
 
     def SimpleImplicitX(self):
-        pass
+        number_of_node = int(self.t / self.ht)
+        x = np.linspace(0, self.l, self.I + 1)
+        layer = np.zeros(self.I + 1)
+        for i in range(0, self.I + 1):
+            layer[i] = self.const_u0
+        A_i = C_i = -self.const_k / self.hx ** 2
+        B_i = self.c / self.ht + 2 * self.const_k / self.hx ** 2 + 4 * self.const_alpha / np.sqrt(self.s)
+        for k in range(1, number_of_node):
+            D = np.zeros(self.I + 1)
+            for i in range(1, self.I):
+                D[i] = self.c * layer[i] / self.ht + self.phi(i * self.hx, self.l)
+
+            alphas = np.zeros(self.I)
+            betas = np.zeros(self.I)
+
+            alphas[0] = 1
+            betas[0] = layer[0] * (-self.hx) * self.const_alpha / self.const_k
+            for i in range(1, self.I):
+                alphas[i] = -A_i / (B_i + C_i * alphas[i - 1])
+                betas[i] = (D[i] - C_i * betas[i - 1]) / (B_i + C_i * alphas[i - 1])
+            layer[self.I] = betas[self.I - 1] / (1 - alphas[self.I - 1] + self.hx * self.const_alpha / self.const_k)
+            for i in range(self.I - 1, -1, -1):
+                layer[i] = alphas[i] * layer[i + 1] + betas[i]
+
+        label = f'ПН (T={self.T}, t={self.t}, I={self.I}, K={self.K})'
+        return x, layer, label
 
     def ModifiedImplicitX(self):
-        x = np.linspace(0, 1, self.I + 1)  ########
+        x = np.linspace(0, self.l, num=self.I + 1)  ########
         maxNode = int(self.t / self.ht)
         betta = self.const_alpha / self.const_k
         mu = self.const_k / self.c
@@ -101,17 +126,17 @@ class DifferentiationScheme:
         for i in range(0, self.I):
             phi[i] = math.sin(math.pi * x[i] / self.l) ** 4
             g_i[i] = self.ht / self.c * (gamma * self.const_u0 + phi[i])
-        U = np.zeros((self.K, self.I + 1))
+        U = np.zeros((self.K + 1, self.I + 1))
         U[0, 0:self.I] = self.const_u0  # u_i_0 = u0
         g_shtrih_i = np.zeros((self.K + 1, self.I + 1))
         v1 = np.zeros(self.K + 1)
         v2 = np.zeros(self.K + 1)
         alpha_i = np.zeros(self.I + 1)
-        betta_i = np.zeros((self.K, self.I + 1))
+        betta_i = np.zeros((self.K + 1, self.I + 1))
         d1 = d2 = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c + 2 * betta * mu * self.ht / self.hx
         w1 = w2 = 2 * mu * self.ht / (self.hx ** 2)
         alpha_i[1] = b / (a - b * w1 / d1)
-        for k in range(1, self.K):
+        for k in range(1, self.K + 1):
             for i in range(0, self.I):
                 g_shtrih_i[k - 1, i] = U[k - 1, i] + g_i[i]
 
@@ -119,17 +144,17 @@ class DifferentiationScheme:
                                                        gamma * self.ht / self.c) + self.ht / self.c * phi[0]
             betta_i[k, 1] = (g_shtrih_i[k - 1, 1] + b * v1[k - 1] / d1) / (a - b * w1 / d1)
 
-            for i in range(2, self.I - 1):
+            for i in range(2, self.I):
                 alpha_i[i] = b / (a - b * alpha_i[i - 1])
                 betta_i[k, i] = (g_shtrih_i[k - 1, i] + b * betta_i[k, i - 1]) / (a - b * alpha_i[i - 1])
             v2[k - 1] = U[k - 1, self.I] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
                                                             gamma * self.ht / self.c) + self.ht / self.c * phi[
                             self.I - 1]
             U[k, self.I] = (v2[k - 1] + w2 * betta_i[k, self.I - 1]) / (d2 - w2 * alpha_i[self.I - 1])
-            for i in range(self.I - 1, 1, -1):
+            for i in range(self.I - 1, 0, -1):
                 U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
             U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
-        label = f'МН (T={self.T}, t={self.t}, I={self.I}, K={self.K})'
+        label = f'МН (t={self.t})'  # , I={self.I}, K={self.K})'
         return x, U[maxNode], label
 
     def SimpleApparentT(self):
@@ -170,17 +195,17 @@ class DifferentiationScheme:
             upperLayer = np.zeros(self.I + 1)
             for i in range(1, self.I):
                 node = self.const_k * (lowerLayer[i + 1] - 2 * lowerLayer[i] + lowerLayer[i - 1]) / self.hx ** 2 - \
-                       self.xi * lowerLayer[i] + self.phi(i * self.hx, self.l)
+                       self.gamma * lowerLayer[i] + self.phi(i * self.hx, self.l)
                 upperLayer[i] = self.ht * node / self.c + lowerLayer[i]
 
             node0 = 2 * self.const_k * (lowerLayer[1] - lowerLayer[0] - self.const_alpha
                                         * self.hx * (lowerLayer[
-                                                         0] - self.const_u0) / self.const_k) / self.hx ** 2 - self.xi * \
+                                                         0] - self.const_u0) / self.const_k) / self.hx ** 2 - self.gamma * \
                     lowerLayer[0] + self.const_u0 + self.phi(0, self.l)
             upperLayer[0] = self.ht * node0 / self.c + lowerLayer[0]
             nodeI = 2 * self.const_k * (lowerLayer[self.I - 1] - lowerLayer[self.I] - self.const_alpha
                                         * self.hx * (lowerLayer[
-                                                         self.I] - self.const_u0) / self.const_k) / self.hx ** 2 - self.xi * \
+                                                         self.I] - self.const_u0) / self.const_k) / self.hx ** 2 - self.gamma * \
                     lowerLayer[self.I] + self.const_u0 + self.phi(self.I * self.hx, self.l)
             upperLayer[self.I] = self.ht * nodeI / self.c + lowerLayer[self.I]
             lowerLayer = upperLayer
@@ -192,9 +217,37 @@ class DifferentiationScheme:
         return t, U, label
 
     def SimpleImplicitT(self):
-        pass
+        number_of_node = int(self.x / self.hx)
+        t = np.linspace(0, self.T, self.K + 1)
+        layer = np.zeros(self.I + 1)
+        for i in range(0, self.I + 1):
+            layer[i] = self.const_u0
+        U = [layer[number_of_node]]
+        A_i = C_i = -self.const_k / self.hx ** 2
+        B_i = self.c / self.ht + 2 * self.const_k / self.hx ** 2 + 4 * self.const_alpha / np.sqrt(self.s)
+        for k in range(1, self.K + 1):
+            D = np.zeros(self.I + 1)
+            for i in range(1, self.I):
+                D[i] = self.c * layer[i] / self.ht + self.phi(i * self.hx, self.l)
+
+            alphas = np.zeros(self.I)
+            betas = np.zeros(self.I)
+
+            alphas[0] = 1
+            betas[0] = layer[0] * (-self.const_alpha * self.hx / self.const_k)
+            for i in range(1, self.I):
+                alphas[i] = -A_i / (B_i + C_i * alphas[i - 1])
+                betas[i] = (D[i] - C_i * betas[i - 1]) / (B_i + C_i * alphas[i - 1])
+            layer[self.I] = betas[self.I - 1] / (1 - alphas[self.I - 1] + self.hx * self.const_alpha / self.const_k)
+            for i in range(self.I - 1, -1, -1):
+                layer[i] = alphas[i] * layer[i + 1] + betas[i]
+            U.append(layer[number_of_node])
+
+        label = f'ПН x={self.x}, I={self.I}, K={self.K})'
+        return t, U, label
 
     def ModifiedImplicitT(self):
+        maxNode = int(self.x / self.hx)
         t = np.linspace(0, self.T, self.K + 1)
         betta = self.const_alpha / self.const_k
         mu = self.const_k / self.c
@@ -212,11 +265,11 @@ class DifferentiationScheme:
         v1 = np.zeros(self.K + 1)
         v2 = np.zeros(self.K + 1)
         alpha_i = np.zeros(self.I + 1)
-        betta_i = np.zeros((self.K, self.I + 1))
+        betta_i = np.zeros((self.K + 1, self.I + 1))
         d1 = d2 = 1 + 2 * mu * self.ht / (self.hx ** 2) + gamma * self.ht / self.c + 2 * betta * mu * self.ht / self.hx
         w1 = w2 = 2 * mu * self.ht / (self.hx ** 2)
         alpha_i[1] = b / (a - b * w1 / d1)
-        for k in range(1, self.K):
+        for k in range(1, self.K + 1):
             for i in range(0, self.I):
                 g_shtrih_i[k - 1, i] = U[k - 1, i] + g_i[i]
 
@@ -224,15 +277,18 @@ class DifferentiationScheme:
                                                        gamma * self.ht / self.c) + self.ht / self.c * phi[0]
             betta_i[k, 1] = (g_shtrih_i[k - 1, 1] + b * v1[k - 1] / d1) / (a - b * w1 / d1)
 
-            for i in range(2, self.I - 1):
+            for i in range(2, self.I):
                 alpha_i[i] = b / (a - b * alpha_i[i - 1])
                 betta_i[k, i] = (g_shtrih_i[k - 1, i] + b * betta_i[k, i - 1]) / (a - b * alpha_i[i - 1])
             v2[k - 1] = U[k - 1, self.I] + self.const_u0 * (2 * betta * mu * self.ht / self.hx +
                                                             gamma * self.ht / self.c) + self.ht / self.c * phi[
                             self.I - 1]
             U[k, self.I] = (v2[k - 1] + w2 * betta_i[k, self.I - 1]) / (d2 - w2 * alpha_i[self.I - 1])
-            for i in range(self.I - 1, 1, -1):
+            for i in range(self.I - 1, 0, -1):
                 U[k, i] = alpha_i[i] * U[k, i + 1] + betta_i[k, i]
             U[k, 0] = w1 / d1 * U[k, 1] + v1[k - 1] / d1
-        label = f'МН (x={self.x}, I={self.I}, K={self.K})'
-        return t, U[:, 2], label
+        # print(U[self.K, maxNode])
+        # print(U[:][maxNode])
+        label = f'МН (x={self.x})'  # , I={self.I}, K={self.K})'
+        return t, U[:, maxNode], label
+

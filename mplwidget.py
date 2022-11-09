@@ -46,7 +46,7 @@ class MplWidget(QWidget):
         self.canvas.addPlot(x, y, label)
 
     def draw(self):
-        self.canvas.ax.legend(loc='upper right')
+        self.canvas.ax.legend(loc='lower right')
         self.canvas.draw()
 
     def clearPlot(self):

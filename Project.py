@@ -250,7 +250,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Параметры"))
         self.label_9.setText(_translate("MainWindow", "Схема"))
         self.SimpleApparent.setText(_translate("MainWindow", "Простейшая явная конечно-разностная"))
-        self.ModifiedApparent.setText(_translate("MainWindow", "Модифицированная явнаа конечно-разностная"))
+        self.ModifiedApparent.setText(_translate("MainWindow", "Модифицированная явная конечно-разностная"))
         self.SimpleImplicit.setText(_translate("MainWindow", "Простейшая неявная конечно-разностная"))
         self.ModifiedImplicit.setText(_translate("MainWindow", "Модифицированная неявная конечно-разностная"))
         self.Plotting.setText(_translate("MainWindow", "Отрисовать график"))
